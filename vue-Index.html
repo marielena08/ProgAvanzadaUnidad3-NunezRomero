@@ -1,0 +1,102 @@
+<html>
+    <!-- MARIELENA NUÑEZ ROMERO
+        PROGRAMACION AVANZADA EN INTERNET
+        UNIDAD 2 VUE
+
+    -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body{
+                background-color: cornflowerblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" id="container_app">
+            <!-- <h1>{{ message }}</h1> -->
+            <h1>HOLA {{name}}</h1>
+            <br>
+            <input type="text" v-model="name" name="">
+            <button @click="count++">
+                CLICK ME:{{count}}
+            </button>
+            <br>
+            <input type="" v-model="num1" name=""> <br>
+            <input type="" v-model="num2" name="">
+            <br>
+            <button @click="resultado=((+num1)+(+num2))">
+                suma
+            </button>
+            <br>
+            <h3>EL RESULTADO ES:  <span v-if="resultado!=0">{{resultado}}</span></h3>
+
+           <hr>
+            <form action="">
+                <fieldset>
+                    <legend>
+                        NOMBRE
+                    </legend>
+                    <input type="text" v-model="username" name="">
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        APELLIDO
+                    </legend>
+                    <input type="text" v-model="lastname" name="">
+                </fieldset>
+                <button type="button" v-on:click="addPerson">
+                    Save Data
+                </button>
+            </form>
+            <hr>
+            <ul>
+                <li v-for="item in persons">
+                    {{item.name}} - {{item.lastname}}
+                </li>
+            </ul>
+        </div>
+
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"> </script> 
+        <script type="text/javascript"> 
+            const{createApp, ref} = Vue
+            createApp({
+                setup(){
+                    // const message = ref('HOLA VUE')
+                    const message = "";
+                    const name = "";
+                    const num1 = 0;
+                    const num2 = 0;
+                    const username = ref(''); lastname = ref('');
+                    const persons = ref([]);
+
+                    return {
+                        // message
+                        name: ref('NOMBRE'),
+                        count: ref(10),
+                        num1: ref(0),
+                        num2: ref(0),
+                        resultado: ref(0),
+                        username,
+                        lastname,
+                        persons
+                    }
+                },
+                methods:{
+                    addPerson(){
+                        const person ={
+                            name:this.username,
+                            lastname:this.lastname
+                        }
+                        this.persons.push(person)
+                        // console.log(this.username)
+                        // console.log(this.lastname)
+                    }
+                }
+
+            }).mount('#container_app')
+
+        </script>        
+    </body>
+</html>
