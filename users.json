@@ -1,0 +1,18 @@
+[
+    {
+        "name":"Marielena",
+        "lastame":"Nuñez",
+        "email": "mariromero@gmail.com",
+        "password": "1234",
+        "role_id": 1,
+        "avatar": ""
+    },
+    {
+        "name":"Arturo",
+        "lastame":"Jordan",
+        "email": "arturito@gmail.com",
+        "password": "4567",
+        "role_id": 1,
+        "avatar": ""
+    }
+]
