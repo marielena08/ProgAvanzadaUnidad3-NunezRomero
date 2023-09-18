@@ -2,7 +2,7 @@
     <!-- MARIELENA NUÑEZ ROMERO
         PROGRAMACION AVANZADA EN INTERNET
         UNIDAD 3 VUE
-        7.- Utiliza un arreglo y v-for para mostrar los registros, así como un form para añadir nuevos
+        11.- Realiza un login utilizando un json local haciendo uso de map, fetch  
 
     -->
     <head>
@@ -16,8 +16,22 @@
     </head>
     <body>
         <div class="container" id="container_app">
+
+            <form action="">
+                <fieldset>
+                    <legend>Email</legend>
+                    <input v-model="email" type="email" placeholder="write here" name="">
+                </fieldset>
+                <fieldset>
+                    <legend>Password</legend>
+                    <input v-model="password" type="password" placeholder="write here" name="">
+                </fieldset>
+                <button @click="login" type="button">
+                    Access
+                </button>
+            </form>
             <!-- <h1>{{ message }}</h1> -->
-            <h1>HOLA {{name}}</h1>
+            <!-- <h1>HOLA {{name}}</h1>
             <br>
             <input type="text" v-model="name" name="">
             <button @click="count++">
@@ -57,46 +71,90 @@
                     {{item.name}} - {{item.lastname}}
                 </li>
             </ul>
-        </div>
+        </div> -->
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"> </script> 
         <script type="text/javascript"> 
+
             const{createApp, ref} = Vue
             createApp({
                 setup(){
-                    // const message = ref('HOLA VUE')
-                    const message = "";
-                    const name = "";
-                    const num1 = 0;
-                    const num2 = 0;
-                    const username = ref(''); lastname = ref('');
-                    const persons = ref([]);
+                    users = ref([]);
+                    email = ref(''); password = ref('');
 
                     return {
-                        // message
-                        name: ref('NOMBRE'),
-                        count: ref(10),
-                        num1: ref(0),
-                        num2: ref(0),
-                        resultado: ref(0),
-                        username,
-                        lastname,
-                        persons
+                       users,
+                       email,
+                       password
                     }
                 },
                 methods:{
-                    addPerson(){
-                        const person ={
-                            name:this.username,
-                            lastname:this.lastname
+                    async login(){
+                        //traer datos
+                        console.log("hola");
+                        const response = await fetch("users.json");
+                        const users = await response.json();
+                        console.log(users);
+                        let login = false;
+                        //recorrer datos
+                        users.forEach((user) => {
+                            // comprobar datos
+                            if(this.email == user.email){
+                                if(this.password == user.password){
+                                    console.log("holita")
+                                    alert("BIENVENIDO")
+                                    login = true;
+                                }
+                            }
+                         });
+                        if (!login){
+                            alert("VERIFIQUE SUN INFORMACION")
                         }
-                        this.persons.push(person)
-                        // console.log(this.username)
-                        // console.log(this.lastname)
+                        
                     }
                 }
-
             }).mount('#container_app')
+
+
+
+
+
+            // const{createApp, ref} = Vue
+            // createApp({
+            //     setup(){
+            //         // const message = ref('HOLA VUE')
+            //         const message = "";
+            //         const name = "";
+            //         const num1 = 0;
+            //         const num2 = 0;
+            //         const username = ref(''); lastname = ref('');
+            //         const persons = ref([]);
+
+            //         return {
+            //             // message
+            //             name: ref('NOMBRE'),
+            //             count: ref(10),
+            //             num1: ref(0),
+            //             num2: ref(0),
+            //             resultado: ref(0),
+            //             username,
+            //             lastname,
+            //             persons
+            //         }
+            //     },
+            //     methods:{
+            //         addPerson(){
+            //             const person ={
+            //                 name:this.username,
+            //                 lastname:this.lastname
+            //             }
+            //             this.persons.push(person)
+            //             // console.log(this.username)
+            //             // console.log(this.lastname)
+            //         }
+            //     }
+
+            // }).mount('#container_app')
 
         </script>        
     </body>
