@@ -3,6 +3,7 @@
         PROGRAMACION AVANZADA EN INTERNET
         UNIDAD 3 VUE
         11.- Realiza un login utilizando un json local haciendo uso de map, fetch  
+        12.- Completa el login, guardar en sesión js los datos y muestra una tabka con los datos
 
     -->
     <head>
@@ -10,26 +11,82 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             body{
-                background-color: cornflowerblue;
+                background-color: rgb(213, 168, 255);
             }
+            table.customTable {
+                width: 90%;
+                background-color: #FFFFFF;
+                border-collapse: collapse;
+                border-width: 3px;
+                border-color: #9e35fa;
+                border-style: dashed;
+                color: #000000;
+                margin-left: 60px;
+                margin-top: 20px;
+            }
+
+            table.customTable td, table.customTable th {
+                border-width: 3px;
+                border-color: #911BF8;
+                border-style: dashed;
+                padding: 5px;
+            }
+
+            table.customTable thead {
+                background-color: #9F7EF8;
+            }
+            
         </style>
     </head>
     <body>
         <div class="container" id="container_app">
 
-            <form action="">
+            <form v-if="!is_login">
                 <fieldset>
                     <legend>Email</legend>
-                    <input v-model="email" type="email" placeholder="write here" name="">
+                    <input v-model="email" type="email" placeholder="Ingresa tu correo" name="">
                 </fieldset>
                 <fieldset>
                     <legend>Password</legend>
-                    <input v-model="password" type="password" placeholder="write here" name="">
+                    <input v-model="password" type="password" placeholder="Ingresa tu contraseña " name="">
                 </fieldset>
                 <button @click="login" type="button">
-                    Access
+                    Entrar
                 </button>
             </form>
+           
+            <table class="customTable" v-if="is_login">
+                <!-- <h2> LISTA DE USUARIOS</h2> -->
+                <thead>
+                  <tr>
+                    <th>Informacion Personal</th>
+                    <th>Contacto</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="u in users">
+                    <td>{{u.name}} - {{u.lastname}}</td>
+                    <td>{{u.email}}</td>
+                    <td>{{u.role_id}}</td>
+                    <td>
+                        <button>Editar</button>
+                        <button>Eliminar</button>
+                        Botones Pendientes de funcionar
+                    </td>
+                  </tr>
+                </tbody>
+            </table>
+            <!-- <hr>
+            <button type="button">
+                Añadir Nuevo Usuario (Pendiente)
+            </button> 
+            <hr> -->
+           
+
+              
+              
             <!-- <h1>{{ message }}</h1> -->
             <!-- <h1>HOLA {{name}}</h1>
             <br>
@@ -82,32 +139,51 @@
                     users = ref([]);
                     email = ref(''); password = ref('');
 
+                    let temporal = localStorage.getItem("is_login");
+                    if (temporal == null) {
+                        temporal = false
+                    }
+                    is_login = ref(temporal);
+
                     return {
                        users,
                        email,
-                       password
+                       password,
+                       is_login
                     }
+                },
+                mounted: function(){
+                    const getUsers = async () => {
+                        const response = await fetch("users.json");
+                        const temporal_users = await response.json();
+                        console.log(temporal_users)
+                        this.users = temporal_users;
+                    }
+                    if (this.is_login) {
+                        getUsers()
+                    }
+
                 },
                 methods:{
                     async login(){
                         //traer datos
-                        console.log("hola");
-                        const response = await fetch("users.json");
-                        const users = await response.json();
-                        console.log(users);
-                        let login = false;
+                        const response = await fetch("users.json?v=1");
+                        this.users = await response.json();
+                        
+                        this.is_login = false;
                         //recorrer datos
-                        users.forEach((user) => {
+                        this.users.forEach((user) => {
                             // comprobar datos
                             if(this.email == user.email){
                                 if(this.password == user.password){
-                                    console.log("holita")
+                                    this.is_login = true;
                                     alert("BIENVENIDO")
-                                    login = true;
+                                    localStorage.setItem("user_data", JSON.stringify(user));
+                                    localStorage.setItem("is_login", "true");
                                 }
                             }
                          });
-                        if (!login){
+                        if (!this.is_login){
                             alert("VERIFIQUE SUN INFORMACION")
                         }
                         
@@ -155,6 +231,10 @@
             //     }
 
             // }).mount('#container_app')
+
+        </script>        
+    </body>
+</html>tainer_app')
 
         </script>        
     </body>
