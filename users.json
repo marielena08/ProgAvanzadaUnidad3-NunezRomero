@@ -1,7 +1,7 @@
 [
     {
         "name":"Marielena",
-        "lastame":"Nuñez",
+        "lastname":"Nuñez",
         "email": "mariromero@gmail.com",
         "password": "1234",
         "role_id": 1,
@@ -9,10 +9,58 @@
     },
     {
         "name":"Arturo",
-        "lastame":"Jordan",
+        "lastname":"Jordan",
         "email": "arturito@gmail.com",
         "password": "4567",
-        "role_id": 1,
+        "role_id": 2,
+        "avatar": ""
+    },
+    {
+        "name":"Maria",
+        "lastname":"Romero",
+        "email": "mromero@gmail.com",
+        "password": "1234",
+        "role_id": 2,
+        "avatar": ""
+    },
+    {
+        "name":"Carlos",
+        "lastname":"Martinez",
+        "email": "carlos@gmail.com",
+        "password": "1234",
+        "role_id": 3,
+        "avatar": ""
+    },
+    {
+        "name":"Eduardo",
+        "lastname":"Castro",
+        "email": "lalo@gmail.com",
+        "password": "1234",
+        "role_id": 3,
+        "avatar": ""
+    },
+    {
+        "name":"Felipe",
+        "lastname":"Aguilar",
+        "email": "aguilar@gmail.com",
+        "password": "4567",
+        "role_id": 3,
+        "avatar": ""
+    },
+    {
+        "name":"Silvia",
+        "lastname":"Espinoza",
+        "email": "silvia@gmail.com",
+        "password": "5678",
+        "role_id": 2,
+        "avatar": ""
+    },
+    {
+        "name":"Sebastian",
+        "lastname":"Agundez",
+        "email": "agundez@gmail.com",
+        "password": "1234",
+        "role_id": 3,
         "avatar": ""
     }
 ]
