@@ -4,6 +4,7 @@
         UNIDAD 3 VUE
         11.- Realiza un login utilizando un json local haciendo uso de map, fetch  
         12.- Completa el login, guardar en sesión js los datos y muestra una tabka con los datos
+        13.- Crear el crud completo con los datos del json
 
     -->
     <head>
@@ -54,39 +55,76 @@
                     Entrar
                 </button>
             </form>
-           
-            <table class="customTable" v-if="is_login">
-                <!-- <h2> LISTA DE USUARIOS</h2> -->
-                <thead>
-                  <tr>
-                    <th>Informacion Personal</th>
-                    <th>Contacto</th>
-                    <th>Rol</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="u in users">
-                    <td>{{u.name}} - {{u.lastname}}</td>
-                    <td>{{u.email}}</td>
-                    <td>{{u.role_id}}</td>
-                    <td>
-                        <button>Editar</button>
-                        <button>Eliminar</button>
-                        Botones Pendientes de funcionar
-                    </td>
-                  </tr>
-                </tbody>
-            </table>
-            <!-- <hr>
-            <button type="button">
-                Añadir Nuevo Usuario (Pendiente)
-            </button> 
-            <hr> -->
-           
+            <div v-if="is_login">
+                <table class="customTable" >
+                    <h2> LISTA DE USUARIOS</h2>
+                    <thead>
+                    <tr>
+                        <th>Informacion Personal</th>
+                        <th>Contacto</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="u in users">
+                        <td>{{u.name}}  {{u.lastname}}</td>
+                        <td>{{u.email}}</td>
+                        <td>{{u.role_id}}</td>
+                        <td>
+                            <button @click="edit(u)">Editar</button>
+                            <button @click="remove(u.id)">Eliminar</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <button @click="action= 'add'">
+                    Añadir Nuevo Usuario
+                </button> 
+                <hr>
 
-              
-              
+                <div class="rendered-form" v-if="action=='add'">
+                    <div class="">
+                        <h1 access="false">AGREGAR NUEVO USUARIO</h1></div>
+                    <div>
+                        <label for="text-"> Nombre Completo</label>
+                        <input v-model="new_users.name" type="text" placeholder="Ingrese su Nombre Completo">
+                    </div>
+                    <div>
+                        <label for="text-"> Correo Electrónico</label>
+                        <input v-model="new_users.email" type="text" placeholder="Ingrese su Correo Electrónico">
+                    </div>
+                    <div>
+                        <label for="text-"> Rol</label>
+                        <input v-model="new_users.rol" type="text" placeholder="Ingrese su Rol en la Empresa">
+                    </div>
+                    <div>
+                        <button type="button" @click="save('create')">Guardar Usuario</button>
+                    </div>
+                </div>
+                <div class="rendered-form" v-if="action=='edit'">
+                    <div class="">
+                        <h1 access="false">EDITAR INFORMACION DEL USUARIO</h1></div>
+                    <div>
+                        <label for="text-"> Nombre Completo</label>
+                        <input v-model="new_users.name" type="text" placeholder="Ingrese su Nombre Completo">
+                    </div>
+                    <div>
+                        <label for="text-"> Correo Electrónico</label>
+                        <input v-model="new_users.email" type="text" placeholder="Ingrese su Correo Electrónico">
+                    </div>
+                    <div>
+                        <label for="text-"> Rol</label>
+                        <input v-model="new_users.rol" type="text" placeholder="Ingrese su Rol en la Empresa">
+                    </div>
+                    <input type="hidden" v-model="new_users.id">
+                    <div>
+                        <button type="button" @click="save('update')">Guardar Usuario Actualizado</button>
+                    </div>
+                </div>
+            </div>
+           
             <!-- <h1>{{ message }}</h1> -->
             <!-- <h1>HOLA {{name}}</h1>
             <br>
@@ -138,6 +176,8 @@
                 setup(){
                     users = ref([]);
                     email = ref(''); password = ref('');
+                    action = ref('');
+                    new_users = ref([]);
 
                     let temporal = localStorage.getItem("is_login");
                     if (temporal == null) {
@@ -149,7 +189,9 @@
                        users,
                        email,
                        password,
-                       is_login
+                       is_login,
+                       action,
+                       new_users
                     }
                 },
                 mounted: function(){
@@ -185,8 +227,50 @@
                          });
                         if (!this.is_login){
                             alert("VERIFIQUE SUN INFORMACION")
+                        } 
+                    },
+                    edit(target){
+                        this.action = 'edit';
+                        this.new_users.name = target.name;
+                        this.new_users.email = target.email;
+                        this.new_users.rol = target.role_id;
+                        this.new_users.id = target.id;
+                    },
+                    save(action){
+                        this.new_users.role_id = this.new_users.rol;
+                        if (action == 'create') {
+                            this.new_users.id = microtime = (Date.now() % 1000) / 1000;
+                            this.users.push(this.new_users);
+                            this.new_users = [];
+                            alert("USUARIO AGREGADO CON EXITO")  
                         }
-                        
+                        if (action == 'update') {
+                            this.users.forEach((user) => {
+                                if (user.id == this.new_users.id) {
+                                    user.name = this.new_users.name;
+                                    user.email = this.new_users.email;
+                                    user.role_id = this.new_users.rol;
+                                    alert("USUARIO ACTUALIZADO CON EXITO") 
+                                }
+                            })
+                            
+                        }
+                       this.action = '';
+                    },
+                    remove(id){
+                        console.log(id);
+                        let c = 0;
+                        let i = 0;
+
+                        this.users.forEach((user)=> {
+                            if (user.id == id) {
+                                console.log(user.id)
+                                i = c;
+                            }
+                            c++;
+                        })
+                        console.log(i);
+                        this.users.splice(i,1);
                     }
                 }
             }).mount('#container_app')
@@ -231,10 +315,6 @@
             //     }
 
             // }).mount('#container_app')
-
-        </script>        
-    </body>
-</html>tainer_app')
 
         </script>        
     </body>
