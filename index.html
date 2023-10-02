@@ -1,0 +1,174 @@
+<html>
+    <!-- MARIELENA NUÑEZ ROMERO
+        PROGRAMACION AVANZADA EN INTERNET
+        UNIDAD 3 VUE
+    -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body{
+                background-color: rgb(136, 186, 243);
+            } 
+            table.customTable {
+                width: 90%;
+                background-color: #FFFFFF;
+                border-collapse: collapse;
+                border-width: 3px;
+                border-color: #3f79e4;
+                border-style:groove;
+                color: #000000;
+                margin-left: 60px;
+                margin-top: 20px;
+            }
+
+            table.customTable td, table.customTable th {
+                border-width: 3px;
+                border-color: #3f79e4;
+                border-style:groove;
+                padding: 5px;
+            }
+
+            table.customTable thead {
+                background-color: #3f79e4;
+            }   
+        </style>
+    </head>
+    <body>
+        <div class="container" id="container_app">
+            <form v-if="!is_login">
+                <fieldset>
+                    <legend>Username</legend>
+                    <input v-model="username" type="text" placeholder="Usuario" name="">
+                </fieldset>
+                <fieldset>
+                    <legend>Password</legend>
+                    <input v-model="password" type="password" placeholder="Contraseña " name="">
+                </fieldset>
+                <button @click="login" type="button">
+                    Entrar
+                </button>
+            </form>
+            <div v-if="is_login">
+                <table class="customTable" >
+                    <thead>
+                    <tr>
+                        <th> </th>
+                        <th>NOMBRE</th>
+                        <th>FECHA DE ESTRENO</th>
+                        <th>DESCRIPCION</th>
+                        <th>POPULARIDAD</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="p in peliculas">
+                        <td> 
+                            <img :src='`https://image.tmdb.org/t/p/w300${p.backdrop_path}`'> 
+                        </td>
+                        <td>{{p.title}}</td>
+                        <td>{{p.release_date}}</td>
+                        <td>{{p.overview}}</td>
+                        <td>{{p.popularity}}</td>    
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"> </script> 
+        <script type="text/javascript"> 
+
+            const{createApp, ref} = Vue
+            createApp({
+                setup(){ 
+                    const username = ref('');
+                    const password = ref('');
+                    const is_login = ref(false);
+                    const peliculas = ref([]);
+
+                    return {
+                        username,
+                        password,
+                        is_login,
+                        peliculas,
+                    }
+                    
+                },
+                mounted: function(){
+                    const options = {
+                        method: 'GET',
+                            headers: {
+                                accept: 'application/json',
+                                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YzUyZjk1NTU1ODI3MWZlMjkzYjNkN2M3MjRhNDAyZSIsInN1YiI6IjY1MTQ0ZDMyYTE5OWE2MDBhYjE3NzhiYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wYyINePUpJDUW47sH_eZU7Mf8D9di7wcBJlEH3lXX8Y'
+                            }
+                        };
+
+                        fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
+                            .then(response => response.json())
+                            .then(json => {
+                                this.peliculas = json.results;
+                                console.log(json)
+                            })
+                            .catch(err => console.error(err))
+                }, 
+                methods:{
+                    async login(){
+                        const options ={
+                            method: 'GET',
+                            headers:{
+                                accept: 'application/json','content-type': 'application/json',
+                                Authorization:'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YzUyZjk1NTU1ODI3MWZlMjkzYjNkN2M3MjRhNDAyZSIsInN1YiI6IjY1MTQ0ZDMyYTE5OWE2MDBhYjE3NzhiYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wYyINePUpJDUW47sH_eZU7Mf8D9di7wcBJlEH3lXX8Y'
+                            }
+                        }     
+            
+                        fetch('https://api.themoviedb.org/3/authentication/token/new',options)
+                            .then(response => response.json())
+                            .then((json) => {
+                                let token = json.request_token;
+                                console.log("Token:", token); 
+                                const options2 ={
+                                    method: 'POST',
+                                    headers:{
+                                        accept: 'application/json','content-type': 'application/json',
+                                        Authorization:'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YzUyZjk1NTU1ODI3MWZlMjkzYjNkN2M3MjRhNDAyZSIsInN1YiI6IjY1MTQ0ZDMyYTE5OWE2MDBhYjE3NzhiYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wYyINePUpJDUW47sH_eZU7Mf8D9di7wcBJlEH3lXX8Y'
+                                    },
+                                    body: JSON.stringify({
+                                        // username: "Marielena1414",
+                                        // password: "12082017mnr",
+                                        username: this.username,
+                                        password: this.password,
+                                        request_token: token,
+                                    })
+                                } 
+                                fetch('https://api.themoviedb.org/3/authentication/token/validate_with_login',options2)
+                                    .then(response => response.json())
+                                    .then(json => {
+                                    console.log(json) 
+                                    const options3 ={
+                                        method: 'POST',
+                                        headers:{
+                                            accept: 'application/json','content-type': 'application/json',
+                                            Authorization:'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YzUyZjk1NTU1ODI3MWZlMjkzYjNkN2M3MjRhNDAyZSIsInN1YiI6IjY1MTQ0ZDMyYTE5OWE2MDBhYjE3NzhiYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wYyINePUpJDUW47sH_eZU7Mf8D9di7wcBJlEH3lXX8Y'
+                                        },
+                                        body: JSON.stringify({
+                                            request_token: token,
+                                        })
+                                    } 
+                                    fetch('https://api.themoviedb.org/3/authentication/session/new',options3)
+                                        .then(response => response.json())
+                                        .then(json => {
+                                            console.log(json)
+                                            if (json.success === false) {
+                                                alert("ERROR");
+                                            } else {
+                                                this.is_login = true;
+                                                alert("felicidades");
+                                            } 
+                                    });
+                                });
+                            });
+                    }
+                }
+            }).mount('#container_app')
+        </script>        
+    </body>
+</html>
